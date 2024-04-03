@@ -1,7 +1,7 @@
 #
 # Docker builder stage.
 #
-FROM nvcr.io/nvidia/cuda:12.3.2-devel-ubuntu22.04 as builder
+FROM nvcr.io/nvidia/cuda:12.3.1-devel-ubuntu22.04 as builder
 
 ARG COLMAP_GIT_COMMIT=main
 ARG CUDA_ARCHITECTURES=native
@@ -50,7 +50,7 @@ RUN cd colmap && \
 #
 # Docker runtime stage.
 #
-FROM nvcr.io/nvidia/cuda:12.3.2-runtime-ubuntu22.04 as runtime
+FROM nvcr.io/nvidia/cuda:12.3.1-runtime-ubuntu22.04 as runtime
 ENV DEBIAN_FRONTEND=noninteractive 
 ENV NVIDIA_VISIBLE_DEVICES=all NVIDIA_DRIVER_CAPABILITIES=all
 
