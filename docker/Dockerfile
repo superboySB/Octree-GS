@@ -1,99 +1,63 @@
-#
-# Docker builder stage.
-#
-FROM nvcr.io/nvidia/cuda:12.3.1-devel-ubuntu22.04 as builder
-
-ARG COLMAP_GIT_COMMIT=main
-ARG CUDA_ARCHITECTURES=native
-ENV QT_XCB_GL_INTEGRATION=xcb_egl
-ENV DEBIAN_FRONTEND=noninteractive 
-ENV NVIDIA_VISIBLE_DEVICES=all NVIDIA_DRIVER_CAPABILITIES=all
-
-# Prevent stop building ubuntu at time zone selection.
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Prepare and empty machine for building.
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends --no-install-suggests \
-        git \
-        cmake \
-        ninja-build \
-        build-essential \
-        libboost-program-options-dev \
-        libboost-filesystem-dev \
-        libboost-graph-dev \
-        libboost-system-dev \
-        libeigen3-dev \
-        libflann-dev \
-        libfreeimage-dev \
-        libmetis-dev \
-        libgoogle-glog-dev \
-        libgtest-dev \
-        libsqlite3-dev \
-        libglew-dev \
-        qtbase5-dev \
-        libqt5opengl5-dev \
-        libcgal-dev \
-        libceres-dev
-
-# Build and install COLMAP.
-RUN git clone https://github.com/colmap/colmap.git
-RUN cd colmap && \
-    git fetch https://github.com/colmap/colmap.git ${COLMAP_GIT_COMMIT} && \
-    git checkout FETCH_HEAD && \
-    mkdir build && \
-    cd build && \
-    cmake .. -GNinja -DCMAKE_CUDA_ARCHITECTURES=${CUDA_ARCHITECTURES} \
-        -DCMAKE_INSTALL_PREFIX=/colmap_installed && \
-    ninja install
-
-#
-# Docker runtime stage.
-#
-FROM nvcr.io/nvidia/cuda:12.3.1-runtime-ubuntu22.04 as runtime
-ENV DEBIAN_FRONTEND=noninteractive 
-ENV NVIDIA_VISIBLE_DEVICES=all NVIDIA_DRIVER_CAPABILITIES=all
-
-# Minimal dependencies to run COLMAP binary compiled in the builder stage.
-# Note: this reduces the size of the final image considerably, since all the
-# build dependencies are not needed.
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends --no-install-suggests \
-        libboost-filesystem1.74.0 \
-        libboost-program-options1.74.0 \
-        libc6 \
-        libceres2 \
-        libfreeimage3 \
-        libgcc-s1 \
-        libgl1 \
-        libglew2.2 \
-        libgoogle-glog0v5 \
-        libqt5core5a \
-        libqt5gui5 \
-        libqt5widgets5
-
-# Copy all files from /colmap_installed/ in the builder stage to /usr/local/ in
-# the runtime stage. This simulates installing COLMAP in the default location
-# (/usr/local/), which simplifies environment variables. It also allows the user
-# of this Docker image to use it as a base image for compiling against COLMAP as
-# a library. For instance, CMake will be able to find COLMAP easily with the
-# command: find_package(COLMAP REQUIRED).
-COPY --from=builder /colmap_installed/ /usr/local/
+FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-devel
 
 # Please contact with me if you have problems
 LABEL maintainer="Zipeng Dai <daizipeng@bit.edu.cn>"
 
+ENV DEBIAN_FRONTEND=noninteractive 
+ENV NVIDIA_VISIBLE_DEVICES=all NVIDIA_DRIVER_CAPABILITIES=all
+ARG TORCH_CUDA_ARCH_LIST="3.5;5.0;6.0;6.1;7.0;7.5;8.0;8.6"
+
+RUN apt update && apt install -y tzdata curl wget vim locate git && apt clean && rm -rf /var/lib/apt/lists/*
+
+# Install nerfstudio
+WORKDIR /workspace
+RUN git clone https://github.com/nerfstudio-project/nerfstudio.git
+RUN cd nerfstudio && pip install --upgrade pip setuptools && pip install -e .
+
+# Build colmap first
+WORKDIR /workspace
+RUN apt update && apt install -y imagemagick
+RUN apt update && apt install -y libgl1-mesa-dev libcgal-dev libboost-all-dev libflann-dev qt5-default libmetis-dev \
+    libglew-dev libfreeimage-dev libceres-dev && apt clean && rm -rf /var/lib/apt/lists/*
+RUN git clone https://github.com/colmap/colmap
+RUN mkdir colmap/build
+WORKDIR /workspace/colmap/build
+RUN echo "set_target_properties(colmap_main PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE \
+    INSTALL_RPATH /usr/lib/x86_64-linux-gnu:/opt/conda/lib)" >> ../src/colmap/exe/CMakeLists.txt
+RUN cmake .. -DCMAKE_CUDA_ARCHITECTURES="60;70;80;86" #-DCUDA_ENABLED=OFF 
+RUN make -j8
+RUN make install
+RUN echo "export PATH=$PATH:/workspace/colmap/build/src/colmap/exe" >> /root/.bashrc
+
+# 原版3DGS
+WORKDIR /workspace
+RUN git clone https://github.com/graphdeco-inria/gaussian-splatting --recursive
+WORKDIR /workspace/gaussian-splatting
+RUN conda env create --file environment.yml && conda init bash && exec bash && conda activate gaussian_splatting
+
+# Tweak the CMake file for matching the existing OpenCV version. Fix the naming of FindEmbree.cmake
+WORKDIR /workspace/gaussian-splatting/SIBR_viewers/cmake/linux
+RUN sed -i 's/find_package(OpenCV 4\.5 REQUIRED)/find_package(OpenCV 4.2 REQUIRED)/g' dependencies.cmake
+RUN sed -i 's/find_package(embree 3\.0 )/find_package(EMBREE)/g' dependencies.cmake
+RUN sed -i 's/\bembree\b/embree3/g' /workspace/gaussian-splatting/SIBR_viewers/src/core/raycaster/CMakeLists.txt
+WORKDIR /workspace/gaussian-splatting/SIBR_viewers 
+RUN apt update && \
+    apt install -y libglew-dev libassimp-dev libboost-all-dev libgtk-3-dev libopencv-dev libglfw3-dev libavdevice-dev \
+    libavcodec-dev libeigen3-dev libxxf86vm-dev libembree-dev && \
+    apt clean && rm -rf /var/lib/apt/lists/*
+RUN cmake -Bbuild . -DCMAKE_BUILD_TYPE=Release && \
+    cmake --build build -j24 --target install
+RUN echo "export PATH=$PATH:/workspace/gaussian-splatting/SIBR_viewers/install/bin" >> /root/.bashrc
+RUN echo "export MESA_GL_VERSION_OVERRIDE=4.5" >> /root/.bashrc
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends locales git tmux vim build-essential wget gedit cmake libopencv-dev curl net-tools
-    
-# Python
+    apt-get install -y --no-install-recommends git tmux vim wget gedit curl net-tools libpcl-dev pcl-tools && \
+    apt clean && rm -rf /var/lib/apt/lists/*
+
+# Dependencies of our project
 COPY docker/environment.yml /root/environment.yml
-RUN mkdir ~/miniconda3 && cd ~ && \
-    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh && \
-    bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3 && rm miniconda3/miniconda.sh && \
-    miniconda3/bin/conda init bash
-RUN /root/miniconda3/bin/conda env create -f /root/environment.yml
+RUN conda env create -f /root/environment.yml
+RUN echo "conda activate gsfast" >> /root/.bashrc
 
 WORKDIR /workspace
-CMD ["/bin/bash && conda activate gsfast"]
+CMD ["/bin/bash"]
 

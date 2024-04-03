@@ -1,10 +1,12 @@
 name: gsfast
 channels:
   - pytorch
+  - nvidia
   - pyg
   - conda-forge
   - defaults
 dependencies:
+  - plyfile=0.8.1
   - cudatoolkit=11.6
   - plyfile=0.8.1
   - python=3.7.13

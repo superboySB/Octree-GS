@@ -3,7 +3,7 @@
 ## 复现经历
 ```sh
 # --progress=plain --no-cache=false
-docker build -f docker/Dockerfile --build-arg CUDA_ARCHITECTURES=75 -t nerf_image:0403 .
+docker build -f docker/Dockerfile -t nerf_image:0403 .
 
 docker run -itd --privileged -v /tmp/.X11-unix:/tmp/.X11-unix:ro -e DISPLAY=$DISPLAY --gpus all --network=host --ipc host --name=gsfast nerf_image:0403 /bin/bash
 
@@ -18,7 +18,6 @@ pip install submodules/diff-gaussian-rasterization
 pip install submodules/simple-knn
 
 cd SIBR_viewers && cmake -Bbuild . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j24 --target install
-
 ```
 
 
