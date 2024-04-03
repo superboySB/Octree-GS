@@ -17,10 +17,12 @@ pip install submodules/diff-gaussian-rasterization
 
 pip install submodules/simple-knn
 
-cd SIBR_viewers && cmake -Bbuild . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j24 --target install
+# 运行可视化
+/workspace/gaussian-splatting/SIBR_viewers/install/bin/SIBR_remoteGaussian_app -s xxx # [Argument to override model's path to source dataset]
 ```
 
 
+## Old Readme
 ### [Project Page](https://city-super.github.io/octree-gs/) | [Paper](https://arxiv.org/abs/2403.17898) | [Viewers for Windows](https://drive.google.com/file/d/1BEcAvM98HpchubODF249X3NGoKoC7SuQ/view?usp=sharing)
 
 [Kerui Ren*](https://github.com/tongji-rkr), [Lihan Jiang*](https://jianglh-whu.github.io/), [Tao Lu](https://github.com/inspirelt), [Mulin Yu](https://scholar.google.com/citations?user=w0Od3hQAAAAJ), [Linning Xu](https://eveneveno.github.io/lnxu), [Zhangkai Ni](https://eezkni.github.io/), [Bo Dai](https://daibo.info/) ✉️ <br />

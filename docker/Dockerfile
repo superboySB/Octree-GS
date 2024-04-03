@@ -29,11 +29,11 @@ RUN make -j8
 RUN make install
 RUN echo "export PATH=$PATH:/workspace/colmap/build/src/colmap/exe" >> /root/.bashrc
 
-# 原版3DGS
+# dependencies of original 3DGS
 WORKDIR /workspace
 RUN git clone https://github.com/graphdeco-inria/gaussian-splatting --recursive
 WORKDIR /workspace/gaussian-splatting
-RUN conda env create --file environment.yml && conda init bash && exec bash && conda activate gaussian_splatting
+RUN conda env create -f environment.yml
 
 # Tweak the CMake file for matching the existing OpenCV version. Fix the naming of FindEmbree.cmake
 WORKDIR /workspace/gaussian-splatting/SIBR_viewers/cmake/linux
@@ -55,7 +55,7 @@ RUN apt-get update && \
 
 # Dependencies of our project
 COPY docker/environment.yml /root/environment.yml
-RUN conda env create -f /root/environment.yml
+RUN conda env create -f /root/environment.yml && conda init bash
 RUN echo "conda activate gsfast" >> /root/.bashrc
 
 WORKDIR /workspace
