@@ -1,5 +1,27 @@
 # *Octree*-GS: Towards Consistent Real-time Rendering with LOD-Structured 3D Gaussians
 
+## 复现经历
+```sh
+# --progress=plain --no-cache=false
+docker build -f docker/Dockerfile --build-arg CUDA_ARCHITECTURES=75 -t nerf_image:0403 .
+
+docker run -itd --privileged -v /tmp/.X11-unix:/tmp/.X11-unix:ro -e DISPLAY=$DISPLAY --gpus all --network=host --ipc host --name=gsfast nerf_image:0403 /bin/bash
+
+docker exec -it gsfast /bin/bash
+
+git clone https://github.com/superboySB/Octree-GS.git
+
+cd Octree-GS && conda activate gsfast
+
+pip install submodules/diff-gaussian-rasterization
+
+pip install submodules/simple-knn
+
+cd SIBR_viewers && cmake -Bbuild . -DCMAKE_BUILD_TYPE=Release && cmake --build build -j24 --target install
+
+```
+
+
 ### [Project Page](https://city-super.github.io/octree-gs/) | [Paper](https://arxiv.org/abs/2403.17898) | [Viewers for Windows](https://drive.google.com/file/d/1BEcAvM98HpchubODF249X3NGoKoC7SuQ/view?usp=sharing)
 
 [Kerui Ren*](https://github.com/tongji-rkr), [Lihan Jiang*](https://jianglh-whu.github.io/), [Tao Lu](https://github.com/inspirelt), [Mulin Yu](https://scholar.google.com/citations?user=w0Od3hQAAAAJ), [Linning Xu](https://eveneveno.github.io/lnxu), [Zhangkai Ni](https://eezkni.github.io/), [Bo Dai](https://daibo.info/) ✉️ <br />

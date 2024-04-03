@@ -1,4 +1,4 @@
-name: octree-gs
+name: gsfast
 channels:
   - pytorch
   - pyg
@@ -19,5 +19,3 @@ dependencies:
     - wandb
     - lpips
     - laspy
-    - submodules/diff-gaussian-rasterization
-    - submodules/simple-knn
