@@ -3,9 +3,9 @@
 ## 复现经历
 ```sh
 # --progress=plain --no-cache=false
-docker build -f docker/Dockerfile -t nerf_image:0403 .
+docker build -f docker/Dockerfile -t nerf_image:0404 .
 
-docker run -itd --privileged -v /tmp/.X11-unix:/tmp/.X11-unix:ro -e DISPLAY=$DISPLAY --gpus all --network=host --ipc host --name=gsfast nerf_image:0403 /bin/bash
+docker run -itd --privileged -v /tmp/.X11-unix:/tmp/.X11-unix:ro -e DISPLAY=$DISPLAY --gpus all --network=host --ipc host --name=gsfast nerf_image:0404 /bin/bash
 
 docker exec -it gsfast /bin/bash
 
@@ -20,7 +20,11 @@ pip install submodules/simple-knn
 # 运行可视化
 /workspace/gaussian-splatting/SIBR_viewers/install/bin/SIBR_remoteGaussian_app -s xxx # [Argument to override model's path to source dataset]
 ```
-目前和c3dgs这个工作的结合还存在问题，需要细粒度查看，优先做octree，其次做c3dgs+UE插件+Airsim的结合。
+目前和c3dgs这个工作的结合还存在问题，需要细粒度查看，优先做octree，其次做"c3dgs压缩+UE插件+Airsim仿真决策"的结合。
+
+参考教程
+- https://blog.csdn.net/brzzuibang/article/details/127821027
+- https://github.com/CodexLabsLLC/Colosseum （需要重新打包）
 
 ## Old Readme
 ### [Project Page](https://city-super.github.io/octree-gs/) | [Paper](https://arxiv.org/abs/2403.17898) | [Viewers for Windows](https://drive.google.com/file/d/1BEcAvM98HpchubODF249X3NGoKoC7SuQ/view?usp=sharing)
