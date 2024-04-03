@@ -14,3 +14,4 @@ diff_rasterization/dist
 tensorboard_3d
 screenshots
 *.so
+*.tar

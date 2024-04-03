@@ -20,7 +20,7 @@ pip install submodules/simple-knn
 # 运行可视化
 /workspace/gaussian-splatting/SIBR_viewers/install/bin/SIBR_remoteGaussian_app -s xxx # [Argument to override model's path to source dataset]
 ```
-
+目前和c3dgs这个工作的结合还存在问题，需要细粒度查看，优先做octree，其次做c3dgs+UE插件+Airsim的结合。
 
 ## Old Readme
 ### [Project Page](https://city-super.github.io/octree-gs/) | [Paper](https://arxiv.org/abs/2403.17898) | [Viewers for Windows](https://drive.google.com/file/d/1BEcAvM98HpchubODF249X3NGoKoC7SuQ/view?usp=sharing)
