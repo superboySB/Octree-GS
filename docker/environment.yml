@@ -21,3 +21,5 @@ dependencies:
     - wandb
     - lpips
     - laspy
+    - jaxtyping
+    - opencv-python
