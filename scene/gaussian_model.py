@@ -547,7 +547,7 @@ class GaussianModel:
                         np.asarray(plydata.elements[0]["y"]),
                         np.asarray(plydata.elements[0]["z"])),  axis=1).astype(np.float32)
         
-        levels = np.asarray(plydata.elements[0]["level"])[... ,np.newaxis].astype(np.int)
+        levels = np.asarray(plydata.elements[0]["level"])[... ,np.newaxis].astype(np.int32)
         extra_levels = np.asarray(plydata.elements[0]["extra_level"])[... ,np.newaxis].astype(np.float32)
         self.voxel_size = torch.tensor(plydata.elements[0]["info"][0]).float()
         self.standard_dist = torch.tensor(plydata.elements[0]["info"][1]).float()
