@@ -17,23 +17,41 @@ pip install submodules/diff-gaussian-rasterization
 
 pip install submodules/simple-knn
 
-# colmap
-colmap automatic_reconstructor \
-    --workspace_path $DATASET_PATH \
-    --image_path $DATASET_PATH/images
-
 # 运行可视化
 SIBR_gaussianViewer_app -m xxx # [Argument to override model's path to source dataset]
 ```
-
 需要说明的是：
 - 以上是官方的用法，其实octree-GS团队还修改了可视化工具，详细参考这里的[讲解](https://github.com/city-super/Octree-GS/tree/main/SIBR_viewers)
 - 此外，目前和c3dgs这个工作的结合还存在问题，需要细粒度查看，优先做octree，其次做"c3dgs压缩+UE插件+Airsim仿真决策"的结合。
 
+关于colmap在大规模图拿稀疏重建的方法
+```sh
+# colmap (全部未知的情况)
+colmap automatic_reconstructor \
+    --workspace_path $DATASET_PATH \
+    --image_path $DATASET_PATH/images
+
+# blender -> colmap (使用已知内外参数据的情况)
+cd $DATASET_PATH
+
+python /workspace/Octree-GS/utils/blender_camera2colmap.py
+
+# 移动一下生成的txt文件到`/created/sparse/`
+
+colmap feature_extractor --database_path database.db --image_path images
+
+python /workspace/Octree-GS/utils/transform_colmap_camera.py
+
+colmap exhaustive_matcher --database_path database.db
+
+colmap point_triangulator --database_path database.db --image_path images --input_path created/sparse --output_path sparse
+```
 参考教程
 - https://blog.csdn.net/brzzuibang/article/details/127821027
 - https://github.com/CodexLabsLLC/Colosseum （需要重新打包）
 - https://colmap.github.io/cli.html （关于colmap使用）
+- https://blog.csdn.net/qq_38677322/article/details/126269726 (无敌教程呀)
+- https://github.com/city-super/MatrixCity/blob/main/MatrixCityPlugin/docs/Export-Camere-Poses.md (数据集blender重建)
 
 ## Old Readme
 ### [Project Page](https://city-super.github.io/octree-gs/) | [Paper](https://arxiv.org/abs/2403.17898) | [Viewers for Windows](https://drive.google.com/file/d/1BEcAvM98HpchubODF249X3NGoKoC7SuQ/view?usp=sharing)
