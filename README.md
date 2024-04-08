@@ -17,9 +17,15 @@ pip install submodules/diff-gaussian-rasterization
 
 pip install submodules/simple-knn
 
+# colmap
+colmap automatic_reconstructor \
+    --workspace_path $DATASET_PATH \
+    --image_path $DATASET_PATH/images
+
 # 运行可视化
 SIBR_gaussianViewer_app -m xxx # [Argument to override model's path to source dataset]
 ```
+
 需要说明的是：
 - 以上是官方的用法，其实octree-GS团队还修改了可视化工具，详细参考这里的[讲解](https://github.com/city-super/Octree-GS/tree/main/SIBR_viewers)
 - 此外，目前和c3dgs这个工作的结合还存在问题，需要细粒度查看，优先做octree，其次做"c3dgs压缩+UE插件+Airsim仿真决策"的结合。
@@ -27,6 +33,7 @@ SIBR_gaussianViewer_app -m xxx # [Argument to override model's path to source da
 参考教程
 - https://blog.csdn.net/brzzuibang/article/details/127821027
 - https://github.com/CodexLabsLLC/Colosseum （需要重新打包）
+- https://colmap.github.io/cli.html （关于colmap使用）
 
 ## Old Readme
 ### [Project Page](https://city-super.github.io/octree-gs/) | [Paper](https://arxiv.org/abs/2403.17898) | [Viewers for Windows](https://drive.google.com/file/d/1BEcAvM98HpchubODF249X3NGoKoC7SuQ/view?usp=sharing)
