@@ -37,12 +37,11 @@ cd $DATASET_PATH
 python /workspace/Octree-GS/utils/blender_camera2colmap.py
 
 # 移动一下生成的txt文件到`/created/sparse/`
-
 colmap feature_extractor --database_path database.db --image_path images
 
 python /workspace/Octree-GS/utils/transform_colmap_camera.py
 
-colmap exhaustive_matcher --database_path database.db
+colmap spatial_matcher --database_path database.db
 
 colmap point_triangulator --database_path database.db --image_path images --input_path created/sparse --output_path sparse
 ```
