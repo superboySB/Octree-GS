@@ -55,8 +55,9 @@ def loadCam(args, id, cam_info, resolution_scale):
 
 def cameraList_from_camInfos(cam_infos, resolution_scale, args):
     camera_list = []
-
+    cam_len = len(cam_infos)
     for id, c in enumerate(cam_infos):
+        print(f"{id}/{cam_len}")
         camera_list.append(loadCam(args, id, c, resolution_scale))
 
     return camera_list

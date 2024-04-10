@@ -43,7 +43,7 @@ python /workspace/Octree-GS/utils/transform_colmap_camera.py
 
 colmap spatial_matcher --database_path database.db
 
-colmap point_triangulator --database_path database.db --image_path images --input_path created/sparse --output_path sparse
+colmap point_triangulator --database_path database.db --image_path images --input_path created/sparse --output_path sparse/0
 ```
 参考教程
 - https://blog.csdn.net/brzzuibang/article/details/127821027

@@ -526,10 +526,10 @@ if __name__ == "__main__":
         os.system("echo $CUDA_VISIBLE_DEVICES")
         logger.info(f'using GPU {args.gpu}')
 
-    try:
-        saveRuntimeCode(os.path.join(args.model_path, 'backup'))
-    except:
-        logger.info(f'save code failed~')
+    # try:
+    #     saveRuntimeCode(os.path.join(args.model_path, 'backup'))
+    # except:
+    #     logger.info(f'save code failed~')  # TODO: save code???
         
     dataset = args.source_path.split('/')[-1]
     exp_name = args.model_path.split('/')[-2]
