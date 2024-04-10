@@ -59,7 +59,7 @@ class ModelParams(ParamGroup):
         self.random_background = False
         self.resolution_scales = [1.0]
 
-        self.data_device = "cuda"  # TODO: cuda一次性load camera费劲
+        self.data_device = "cpu"  # TODO: cuda一次性load camera费劲
         self.eval = False
         self.ds = 1
         self.ratio = 1 # sampling the input point cloud
