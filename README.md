@@ -45,6 +45,8 @@ data/
 - 以上是官方的用法，其实octree-GS团队还修改了可视化工具，详细参考这里的[讲解](https://github.com/city-super/Octree-GS/tree/main/SIBR_viewers)
 - 此外，目前和c3dgs这个工作的结合还存在问题，需要细粒度查看，优先做octree，其次做"c3dgs压缩+UE插件+Airsim仿真决策"的结合。
 
+TODO：关于数据集拼接
+
 
 关于colmap在大规模图拿稀疏重建的方法
 ```sh
