@@ -71,6 +71,7 @@ colmap point_triangulator --database_path database.db --image_path images --inpu
 - https://blog.csdn.net/brzzuibang/article/details/127821027
 - https://github.com/CodexLabsLLC/Colosseum （需要重新打包）
 - https://colmap.github.io/cli.html （关于colmap使用）
+- https://blog.csdn.net/a40850273/article/details/127982257
 - https://blog.csdn.net/qq_38677322/article/details/126269726 (无敌教程呀)
 - https://github.com/city-super/MatrixCity/blob/main/MatrixCityPlugin/docs/Export-Camere-Poses.md (数据集blender重建)
 
