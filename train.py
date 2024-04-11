@@ -388,8 +388,8 @@ def readImages(renders_dir, gt_dir):
     for fname in os.listdir(renders_dir):
         render = Image.open(renders_dir / fname)
         gt = Image.open(gt_dir / fname)
-        renders.append(tf.to_tensor(render).unsqueeze(0)[:, :3, :, :].cuda())
-        gts.append(tf.to_tensor(gt).unsqueeze(0)[:, :3, :, :].cuda())
+        renders.append(tf.to_tensor(render).unsqueeze(0)[:, :3, :, :])  # TODO： for large scale，cuda is difficult1
+        gts.append(tf.to_tensor(gt).unsqueeze(0)[:, :3, :, :])
         image_names.append(fname)
     return renders, gts, image_names
 

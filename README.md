@@ -18,15 +18,13 @@ pip install submodules/diff-gaussian-rasterization
 pip install submodules/simple-knn
 
 # 运行可视化
-SIBR_gaussianViewer_app -m xxx # [Argument to override model's path to source dataset]
-```
-需要说明的是：
-- 以上是官方的用法，其实octree-GS团队还修改了可视化工具，详细参考这里的[讲解](https://github.com/city-super/Octree-GS/tree/main/SIBR_viewers)
-- 此外，目前和c3dgs这个工作的结合还存在问题，需要细粒度查看，优先做octree，其次做"c3dgs压缩+UE插件+Airsim仿真决策"的结合。
 
+SIBR_gaussianViewer_app -m model # [Argument to override model's path to source dataset]
+SIBR_remoteGaussian_app.exe -m model -s data
+```
 可视化一个ckpt需要的格式
 ```
-data/
+model/
 ├── point_cloud
 │   ├── point_cloud.ply
 │   cfg_args
@@ -34,7 +32,20 @@ data/
 │   color_mlp.pt
 │   cov_mlp.pt
 │   opacity_mlp.pt
+data/
+├── sparse
+│   ├── 0
+│   │   ├── cameras.bin
+│   │   │── images.bin
+│   │   │── points3D.bin
+│   │   │── points3D.ply
 ```
+
+需要说明的是：
+- 以上是官方的用法，其实octree-GS团队还修改了可视化工具，详细参考这里的[讲解](https://github.com/city-super/Octree-GS/tree/main/SIBR_viewers)
+- 此外，目前和c3dgs这个工作的结合还存在问题，需要细粒度查看，优先做octree，其次做"c3dgs压缩+UE插件+Airsim仿真决策"的结合。
+
+
 关于colmap在大规模图拿稀疏重建的方法
 ```sh
 # colmap (全部未知的情况)
