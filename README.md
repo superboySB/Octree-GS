@@ -55,7 +55,7 @@ cd $DATASET_PATH
 python /workspace/Octree-GS/utils/extract_subset_from_transforms_json.py
 ```
 
-关于colmap在大规模图拿稀疏重建的方法
+关于colmap在大规模图拿稀疏重建的方法，以下好像都不太行，只能`colmap gui`
 ```sh
 cd $DATASET_PATH
 
@@ -64,17 +64,23 @@ colmap automatic_reconstructor \
     --workspace_path $DATASET_PATH \
     --image_path images
 
+# --------------------------------------------------------------------------
 # blender -> colmap (使用已知内外参数据的情况)
-python /workspace/Octree-GS/utils/blender_camera2colmap.py
+# python /workspace/Octree-GS/utils/blender_camera2colmap.py
 
 # 移动一下生成的txt文件到`/created/sparse/`
 colmap feature_extractor --database_path database.db --image_path images
 
-python /workspace/Octree-GS/utils/transform_colmap_camera.py
+# python /workspace/Octree-GS/utils/transform_colmap_camera.py
 
-colmap spatial_matcher --database_path database.db
+# colmap spatial_matcher --database_path database.db
+# colmap exhaustive_matcher --database_path database.db 
+# 预训练字典树：https://demuc.de/colmap/
+colmap vocab_tree_matcher --database_path database.db --VocabTreeMatching.vocab_tree_path vocab_tree_flickr100K_words256K.bin
 
-colmap point_triangulator --database_path database.db --image_path images --input_path created/sparse --output_path sparse/0
+# colmap point_triangulator --database_path database.db --image_path images --input_path created/sparse --output_path sparse/0
+colmap point_triangulator --database_path database.db --image_path images --output_path sparse/0
+
 ```
 参考教程
 - https://blog.csdn.net/brzzuibang/article/details/127821027

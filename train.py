@@ -44,7 +44,7 @@ from argparse import ArgumentParser, Namespace
 from arguments import ModelParams, PipelineParams, OptimizationParams
 
 # torch.set_num_threads(32)
-lpips_fn = lpips.LPIPS(net='vgg').to('cuda')
+lpips_fn = lpips.LPIPS(net='vgg')
 
 try:
     from torch.utils.tensorboard import SummaryWriter
