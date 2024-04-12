@@ -1,6 +1,8 @@
 # *Octree*-GS: Towards Consistent Real-time Rendering with LOD-Structured 3D Gaussians
 
 ## 复现经历
+
+### 基本运行（不带colmap）
 ```sh
 # --progress=plain --no-cache=false
 docker build -f docker/Dockerfile -t nerf_image:0404 .
@@ -45,19 +47,24 @@ data/
 - 以上是官方的用法，其实octree-GS团队还修改了可视化工具，详细参考这里的[讲解](https://github.com/city-super/Octree-GS/tree/main/SIBR_viewers)
 - 此外，目前和c3dgs这个工作的结合还存在问题，需要细粒度查看，优先做octree，其次做"c3dgs压缩+UE插件+Airsim仿真决策"的结合。
 
-TODO：关于数据集拼接
+### 复现大规模数据的colmap进程细节
+下载MatrixCity的small city、aerial，并解压train里面的这10个blocks，然后`docker cp train gsfast:/workspace/Octree-GS/data/`,接下来我们需要合并一下这些数据
+```sh
+cd $DATASET_PATH
 
+python /workspace/Octree-GS/utils/extract_subset_from_transforms_json.py
+```
 
 关于colmap在大规模图拿稀疏重建的方法
 ```sh
+cd $DATASET_PATH
+
 # colmap (全部未知的情况)
 colmap automatic_reconstructor \
     --workspace_path $DATASET_PATH \
-    --image_path $DATASET_PATH/images
+    --image_path images
 
 # blender -> colmap (使用已知内外参数据的情况)
-cd $DATASET_PATH
-
 python /workspace/Octree-GS/utils/blender_camera2colmap.py
 
 # 移动一下生成的txt文件到`/created/sparse/`
