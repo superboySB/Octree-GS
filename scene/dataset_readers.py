@@ -374,7 +374,6 @@ def readNerfSyntheticInfo(path, random_background, white_background, eval, exten
     return scene_info
 
 def readCityInfo(path, random_background, white_background, eval, ds, extension=".tif", llffhold=8, undistorted=False):
-
     if ds > 1:
         json_path = glob.glob(os.path.join(path, f"*_{ds}.json"))[0].split('/')[-1]
     else:

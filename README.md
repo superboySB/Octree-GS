@@ -55,7 +55,7 @@ cd $DATASET_PATH
 python /workspace/Octree-GS/utils/extract_subset_from_transforms_json.py
 ```
 
-关于colmap在大规模图拿稀疏重建的方法，以下好像都不太行，只能`colmap gui`
+关于colmap在大规模图拿稀疏重建的方法，以下这些command好像都不太行，只能`colmap gui`中采取自动生成方式，可以尝试使用字典树加速（也可以exhaustive search），注意`share intrinsic`，质量选择`普通`就够了，然后复现matrix city大约需要3-4天拿到初始点云。
 ```sh
 cd $DATASET_PATH
 
